@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="email_template_appointment_upcoming" model="mail.template">
+            <field name="name">Appointment: Upcoming Appointment Reminder</field>
+            <field name="model_id" ref="clinic.model_clinic_appointment"/>
+            <field name="subject">Upcoming Appointment for {{ object.patient_id.name }}</field>
+            <field name="email_from">{{(object.doctor_id.email or user.email_formatted) }}</field>
+            <!-- <field name="email_from">{{ (object.doctor_id.email and formataddr(('Dr. ' + (object.doctor_id.name or ''), object.doctor_id.email)) or user.email_formatted) }}</field>            <field name="email_to">{{ object.patient_id.email }}</field> -->
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Dear <t t-out="object.patient_id.name"/>,<br/><br/>
+                        This is a friendly reminder that your appointment with <strong><t t-out="object.doctor_id.name"/></strong> 
+                        is scheduled for <strong><t t-out="object.start_time"/></strong>.<br/><br/>
+                        Please ensure you arrive on time.<br/><br/>
+                        Best regards, <br/>
+                        <t t-out="object.doctor_id.name or 'Clinic Management'"/>
+                    </p>
+                </div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+</odoo>

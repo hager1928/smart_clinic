@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Patient List View (Tree) -->
+    <record id="view_patients_tree" model="ir.ui.view">
+    <!--model="ir.ui.view" ======= in db to be stored as a table so you can run it immediately from db instead of loading all of that every single time-->
+        <field name="name">clinic.patient.tree</field>
+        <field name="model">clinic.patient</field>
+        <field name="arch" type="xml">
+            <tree string="Patients" decoration-info="gender == 'male'" decoration-warning="gender == 'female'">
+                <field name="name"/>
+                <field name="date_of_birth"/>
+                <field name="age"/>
+                <field name="gender"/>
+                <field name="email"/>
+                <field name="job"/>
+                <field name="phone"/>
+                <field name="blood_group"/>
+            </tree>
+        </field>
+    </record>
+
+<!-- Patient Form View -->
+    <record id="view_patients_form" model="ir.ui.view">
+        <field name="name">clinic.patient.form</field>
+        <field name="model">clinic.patient</field>
+        <field name="arch" type="xml">
+            <form string="Patients">
+                <header>
+                    <button name="%(clinic.action_reserve_appointment_wizard)d" string="Reserve Appointment" type="action" context="{'default_patient_id': active_id}" />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                            <button name="action_open_patient_appointments" 
+                                    type="object" 
+                                    class="oe_stat_button" 
+                                    icon="fa-file-text-o">
+                                <field name="appointment_ids" widget="statinfo" string="Appointments"/>
+                            </button>
+                    </div>
+                    <field name="image" widget="image" class="oe_avatar" style="width: 120px; height: 120px;" options="{'preview_image': 'image'}"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Patient Name"/>                 
+                        </h1>
+                    </div>
+                    <group string="Patient Info">
+                        <group>
+                            <field name="image"/>
+                            <field name="date_of_birth"/>
+                            <field name="age"/>
+                            <field name="gender"/>
+                            <field name="blood_group"/>
+                            <field name="job"/>
+                            <field name="active"/>
+                        </group>
+                        <group string='Patient Contact Details'>
+                            <field name="phone"/>
+                            <field name="email"/>
+                            <field name="user_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string='Emergency Contact Details'>
+                            <field name="emergency_contact_name"/>
+                            <field name="emergency_contact_phone"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Medical History / Notes">
+                            <field name="medical_history"/>
+                        </page>
+                        <page string="Appointments">
+                            <field name="appointment_ids">
+                                <tree create="true" delete="true">
+                                <field name="patient_id"/>
+                                <field name="doctor_id"/>
+                                <field name="start_time"/>
+                                <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                        <!-- CHATTER SECTION START -->
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                    <!-- CHATTER SECTION END -->
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+        <!-- Patient Kanban View -->
+    <record id="view_patients_kanban" model="ir.ui.view">
+        <field name="name">clinic.patient.kanban</field>
+        <field name="model">clinic.patient</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="phone"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                            </div>
+                            <div class="m1-t">
+                                    <field name="phone"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+        <!-- Patient Search View -->
+    <record id="view_patients_search" model="ir.ui.view">
+        <field name="name">clinic.patient.search</field>
+        <field name="model">clinic.patient</field>
+        <field name="arch" type="xml">
+            <search string="Search Patients">
+                <field name="name"/>
+                <field name="phone"/>
+                <separator/>
+                <filter string="Male" name="male" domain="[('gender', '=', 'male')]"/>
+                <filter string="Female" name="female" domain="[('gender', '=', 'female')]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Gender" name="group_by_gender" context="{'group_by': 'gender'}"/>
+                    <filter string="Blood Type" name="group_by_blood_type" context="{'group_by': 'blood_group'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="action_clinic_patient" model="ir.actions.act_window">
+        <field name="name">Patients</field>
+        <field name="res_model">clinic.patient</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first patient
+            </p>
+        </field>
+    </record>
+    
+</odoo>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Appointment List View (Tree) -->
+    <record id="view_appointments_tree" model="ir.ui.view">
+    <!--model="ir.ui.view" ======= in db to be stored as a table so you can run it immediately from db instead of loading all of that every single time-->
+        <field name="name">clinic.appointment.tree</field>
+        <field name="model">clinic.appointment</field>
+        <field name="arch" type="xml">
+            <tree string="Appointments">
+                <field name="doctor_id"/>
+                <field name="patient_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+<!-- Appointment Form View -->
+    <record id="view_appointments_form" model="ir.ui.view">
+        <field name="name">clinic.appointment.form</field>
+        <field name="model">clinic.appointment</field>
+        <field name="arch" type="xml">
+            <form string="Appointment">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,cancelled"/>
+                    <button name="back_to_draft" string="Draft" type="object" invisible = "state == 'draft'" class="oe_highlight"/>
+                    <button name="convert_to_confirm" string="Confirm" type="object" invisible = "state == 'confirmed'" class="oe_highlight"/>
+                    <button name="convert_to_cancel" string="Cancel" type="object" invisible = "state == 'cancelled'" class="oe_highlight"/>
+                    <button name="send_reminder_email" string="Send Reminder Email for patient" type="object" class="oe_highlight"/>
+                </header>
+                <sheet>
+                    <!-- <field name="image" widget="image" class="oe_avatar" style="width: 120px; height: 120px;" options="{'preview_image': 'image'}"/> -->
+                    <!-- <div class="oe_title">
+                        <h1>
+                            <field name="date" placeholder="Appointment Date"/>                 
+                        </h1>
+                    </div> -->
+                    <group string="Appointment Info">
+                        <group>
+                            <field name="doctor_id"/>
+                            <field name="patient_id"/>
+                            <field name="start_time"/>
+                            <field name="end_time"/>
+                        </group>
+                    </group>
+                    <!-- <notebook>
+                        <page string=" ">
+                            <field name="patient_id"/>
+                        </page>
+                    </notebook> -->
+                </sheet>
+                <!-- CHATTER SECTION START -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+                <!-- CHATTER SECTION END -->
+            </form>
+        </field>
+    </record>
+    
+        <!-- Appointments Kanban View -->
+    <record id="view_appointments_kanban" model="ir.ui.view">
+        <field name="name">clinic.appointment.kanban</field>
+        <field name="model">clinic.appointment</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="doctor_id"/>
+                <field name="patient_id"/>
+                <field name="start_time"/>
+                <field name="end_time"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="start_time"/>
+                                    <field name="end_time"/>
+                                </strong>
+                            </div>
+                            <div class="m1-t">
+                                    <field name="doctor_id"/>
+                            </div>
+                            <div class="m1-t">
+                                    <field name="patient_id"/>
+                            </div>
+                            <div class="m1-t">
+                                    <field name="state"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+        <!-- Appointment Search View -->
+    <record id="view_appointments_search" model="ir.ui.view">
+        <field name="name">clinic.appointment.search</field>
+        <field name="model">clinic.appointment</field>
+        <field name="arch" type="xml">
+            <search string="Search Appointments">
+                <field name="start_time"/>
+                <field name="end_time"/>
+                <field name="doctor_id"/>
+                <field name="patient_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="Start From" name="group_by_start_time" context="{'group_by': 'start_time'}"/>
+                    <filter string="End At" name="group_by_end_time" context="{'group_by': 'end_time'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="action_clinic_appointment" model="ir.actions.act_window">
+        <field name="name">Appointments</field>
+        <field name="res_model">clinic.appointment</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Appointment
+            </p>
+        </field>
+    </record>
+
+#confirm appointment if tomorrow
+    <record id="ir_cron_auto_confirm_appointment" model="ir.cron">
+        <field name="name">auto_confirm_appointment</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="nextcall" eval="(DateTime.now() + relativedelta(days=1)).strftime('%Y-%m-%d 01:00:00')"/> 
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="model_clinic_appointment"/>
+        <field name="code">model._cron_auto_confirm_appointment()</field>
+        <field name="state">code</field>
+    </record>
+    
+#send reminder email to patient if appointment is tomorrow
+    <record id="ir_cron_auto_email_reminder_next_appointment_date" model="ir.cron">
+        <field name="name">send_reminder_email</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="nextcall" eval="(DateTime.now() + relativedelta(days=1)).strftime('%Y-%m-%d 01:00:00')"/> 
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="model_clinic_appointment"/>
+        <field name="code">model._cron_auto_email_reminder_next_appointment_date()</field>
+        <field name="state">code</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Doctor Schedule List View (Tree) -->
+    <record id="view_doctor_schedule_tree" model="ir.ui.view">
+    <!--model="ir.ui.view" ======= in db to be stored as a table so you can run it immediately from db instead of loading all of that every single time-->
+        <field name="name">clinic.doctor.schedule.tree</field>
+        <field name="model">clinic.doctor.schedule</field>
+        <field name="arch" type="xml">
+            <tree string="Doctor Schedules">
+                <field name="doctor_id"/>
+                <field name="day_of_week"/>
+                <field name="start_time" widget="float_time"/>
+                <field name="end_time" widget="float_time"/>
+            </tree>
+        </field>
+    </record>
+
+<!-- Doctor Schedule Form View -->
+    <record id="view_doctor_schedule_form" model="ir.ui.view">
+        <field name="name">clinic.doctor.schedule.form</field>
+        <field name="model">clinic.doctor.schedule</field>
+        <field name="arch" type="xml">
+            <form string="Doctor Schedule">
+                <!-- <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,cancelled"/>
+                    <button name="back_to_draft" string="Draft" type="object" invisible = "state == 'draft'" class="oe_highlight"/>
+                    <button name="convert_to_confirm" string="Confirm" type="object" invisible = "state == 'confirmed'" class="oe_highlight"/>
+                    <button name="convert_to_cancel" string="Cancel" type="object" invisible = "state == 'cancelled'" class="oe_highlight"/>
+                </header> -->
+                <sheet>
+                    <!-- <field name="image" widget="image" class="oe_avatar" style="width: 120px; height: 120px;" options="{'preview_image': 'image'}"/> -->
+                    <div class="oe_title">
+                        <!-- <h1>
+                            <field name="doctor_id" placeholder="Schedule for Doctor"/>                 
+                        </h1> -->
+                    </div>
+                    <group string="Doctor Schedule Info">
+                        <group>
+                            <field name="doctor_id"/>
+                            <field name="day_of_week"/>
+                            <field name="start_time" widget="float_time"/>
+                            <field name="end_time" widget="float_time"/>
+                        </group>
+                    </group>
+                    <!-- <notebook>
+                        <page string=" ">
+                            <field name="patient_id"/>
+                        </page>
+                    </notebook> -->
+                </sheet>
+                <!-- CHATTER SECTION START -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+                <!-- CHATTER SECTION END -->
+            </form>
+        </field>
+    </record>
+    
+        <!-- Doctor Schedules Kanban View -->
+    <record id="view_doctor_schedule_kanban" model="ir.ui.view">
+        <field name="name">clinic.doctor.schedule.kanban</field>
+        <field name="model">clinic.doctor.schedule</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="doctor_id"/>
+                <field name="day_of_week"/>
+                <field name="start_time" widget="float_time"/>
+                <field name="end_time" widget="float_time"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="doctor_id"/>
+                                </strong>
+                            </div>
+                            <div class="m1-t">
+                                    <field name="day_of_week"/>
+                            </div>
+                            <div class="m1-t">
+                                    <field name="start_time" widget="float_time"/>
+                            </div>
+                            <div class="m1-t">
+                                    <field name="end_time" widget="float_time"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+        <!-- Doctor Schedule Search View -->
+    <record id="view_doctor_schedule_search" model="ir.ui.view">
+        <field name="name">clinic.doctor.schedule.search</field>
+        <field name="model">clinic.doctor.schedule</field>
+        <field name="arch" type="xml">
+            <search string="Search Doctor Schedules">
+                <field name="day_of_week"/>
+                <field name="doctor_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="day_of_week" name="group_by_day" context="{'group_by': 'day_of_week'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="action_clinic_doctor_schedule" model="ir.actions.act_window">
+        <field name="name">Doctor Schedules</field>
+        <field name="res_model">clinic.doctor.schedule</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Doctor Schedule
+            </p>
+        </field>
+    </record>
+    
+</odoo>

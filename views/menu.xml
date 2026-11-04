@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!-- Main Top-Level Menu -->
+    <menuitem id="menu_clinic_root"
+              name="Clinic"
+              action="action_clinic_patient"
+              sequence="10"/>
+
+    <!-- Patient Sub-Menu -->
+    <menuitem id="menu_patients"
+              name="Patients"
+              parent="menu_clinic_root"
+              action="action_clinic_patient"
+              sequence="20"/>
+    
+     <!-- Doctor Sub-Menu -->
+    <menuitem id="menu_doctors"
+              name="Doctors"
+              parent="menu_clinic_root"
+              action="action_clinic_doctor"
+              sequence="30"/>
+
+    <!-- Appointment Sub-Menu -->
+    <menuitem id="menu_appointments"
+              name="Appointments"
+              parent="menu_clinic_root"
+              action="action_clinic_appointment"
+              sequence="40"/>
+
+    <!-- Doctor Schedule Sub-Menu -->
+    <menuitem id="menu_doctor_schedule"
+              name="Doctor Schedules"
+              parent="menu_clinic_root"
+              action="action_clinic_doctor_schedule"
+              sequence="50"/>
+</odoo>

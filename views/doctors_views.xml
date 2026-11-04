@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Doctors List View (Tree) -->
+    <record id="view_doctors_tree" model="ir.ui.view">
+    <!--model="ir.ui.view" ======= in db to be stored as a table so you can run it immediately from db instead of loading all of that every single time-->
+        <field name="name">clinic.doctor.tree</field>
+        <field name="model">clinic.doctor</field>
+        <field name="arch" type="xml">
+            <tree string="Doctors">
+                <field name="name"/>
+                <field name="specialization"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="license_number"/>
+            </tree>
+        </field>
+    </record>
+
+<!-- Doctor Form View -->
+    <record id="view_doctors_form" model="ir.ui.view">
+        <field name="name">clinic.doctor.form</field>
+        <field name="model">clinic.doctor</field>
+        <field name="arch" type="xml">
+            <form string="Doctors">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_doctor_schedules" 
+                                type="object" 
+                                class="oe_stat_button" 
+                                icon="fa-file-text-o">
+                            <field name="doctor_schedule_ids" widget="statinfo" string="Doctor Schedules"/>
+                        </button>
+                    </div>
+                    <!-- <field name="image" widget="image" class="oe_avatar" style="width: 120px; height: 120px;" options="{'preview_image': 'image'}"/> -->
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Doctor Name"/>                 
+                        </h1>
+                    </div>
+                    <group string="Doctor Info">
+                        <group>
+                            <field name="specialization"/>
+                            <field name="license_number"/>
+                            <field name="active"/>
+                            <field name="consultation_fee"/>
+                        </group>
+                        <group string='Doctor Contact Details'>
+                            <field name="phone"/>
+                            <field name="email"/>
+                            <field name="user_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Doctor Schedules">
+                            <field name="doctor_schedule_ids">
+                                <tree create="true" delete="true">
+                                <field name="doctor_id"/>
+                                <field name="day_of_week"/>
+                                <field name="start_time"/>
+                                <field name="end_time"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!-- CHATTER SECTION START -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+                <!-- CHATTER SECTION END -->
+            </form>
+        </field>
+    </record>
+    
+        <!-- Doctors Kanban View -->
+    <record id="view_doctors_kanban" model="ir.ui.view">
+        <field name="name">clinic.doctor.kanban</field>
+        <field name="model">clinic.doctor</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="specialization"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                            </div>
+                            <div class="m1-t">
+                                    <field name="phone"/>
+                            </div>
+                            <div class="m1-t">
+                                    <field name="specialization"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+        <!-- Doctors Search View -->
+    <record id="view_doctors_search" model="ir.ui.view">
+        <field name="name">clinic.doctor.search</field>
+        <field name="model">clinic.doctor</field>
+        <field name="arch" type="xml">
+            <search string="Search Doctors">
+                <field name="name"/>
+                <field name="specialization"/>
+                <group expand="0" string="Group By">
+                    <filter string="Specialization" name="group_by_specialization" context="{'group_by': 'specialization'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="action_clinic_doctor" model="ir.actions.act_window">
+        <field name="name">Doctors</field>
+        <field name="res_model">clinic.doctor</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Doctor
+            </p>
+        </field>
+    </record>
+    
+</odoo>
